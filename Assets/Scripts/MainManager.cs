@@ -13,6 +13,8 @@ public class MainManager : MonoBehaviour
     [Header("Parents")]
     public GameObject infantry_parent;
     public GameObject artillery_parent;
+    [Header("Parents")]
+    public GameObject[] current_enemies;
     [Header("UI")]
     public Text main_text;
 
@@ -41,6 +43,7 @@ public class MainManager : MonoBehaviour
 
     public virtual void Win()
     {
+        SetText("WIN");
         gameON = false;
     }
 
@@ -56,6 +59,7 @@ public class MainManager : MonoBehaviour
         {
             int type = Random.Range(0, 2);
             GameObject enemy = Instantiate(enemies[type], GenerateRandomLocation(), Quaternion.identity);
+            current_enemies[i] = enemy;
             switch (type)
             {
                 case 0:
@@ -72,7 +76,7 @@ public class MainManager : MonoBehaviour
     public Vector3 GenerateRandomLocation()
     {
         int z = Random.Range(-2, -46);
-        int x = Random.Range(-21, 21);
+        int x = Random.Range(-21, 7);
         Vector3 location = new Vector3(x,8,z);
         return location;
     }

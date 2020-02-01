@@ -127,7 +127,7 @@ MonoBehaviour:
   shoot_speed: 2
   damage_amount: 20
   is_moving: 0
-  timer: 0
+  shoot_timer: 0
   distance: 25
   stopping_distance: 10
   target: {fileID: 0}

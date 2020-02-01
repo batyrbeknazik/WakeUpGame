@@ -5,6 +5,7 @@ using UnityEngine;
 public class Hero : Character
 {
     public Enemie closestEnemy;
+    private bool no_enemy_left;
     
     public void Start()
     {
@@ -17,14 +18,18 @@ public class Hero : Character
 
         if (MainManager.Instance.gameON)
         {
-            LookAt(FindEnemy());
 
             if (IfIsMoving())
             {
+                
+                LookAt(LookForward());
+
                 Move();
             }
             else
             {
+                LookAt(FindEnemy());
+
                 if (ShootTimer())
                 {
                     Shoot();
@@ -48,17 +53,32 @@ public class Hero : Character
 
     public void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.name == "WinWall")
+        switch (other.gameObject.tag)
         {
-            MainManager.Instance.Win();
+            case "WinWall":
+                if (no_enemy_left)
+                {
+                    MainManager.Instance.Win();
+                }
+                break;
+            case "Enemy":
+                hp = hp - 5;
+                break;
         }
-        else if (other.gameObject.tag=="enemy")
-        {
-            hp = hp - 5;
-        }
+        
+ 
     }
+    
 
+    public Vector3 LookForward()
+    {
+        float moveHorizontal = Input.GetAxisRaw("Horizontal");
+        float moveVertical = Input.GetAxisRaw("Vertical");
 
+        Vector3 movement = new Vector3(0.0f, moveHorizontal + moveVertical, 0.0f);
+
+        return movement;
+    }
 
     public override Vector3 FindEnemy()
     {
@@ -103,6 +123,10 @@ public class Hero : Character
             if(enemie!=null)
             {
                 enemie.Damage();
+            }
+            else
+            {
+                no_enemy_left = true;
             }
             
             Debug.Log(info.transform.name);

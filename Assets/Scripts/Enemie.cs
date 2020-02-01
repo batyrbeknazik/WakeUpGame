@@ -49,6 +49,7 @@ public class Enemie : Character
         }
     }
 
+
     public bool EnemieIsNear()
     {
         return Vector2.Distance(transform.position, target.position) < distance;
@@ -96,9 +97,9 @@ public class Enemie : Character
        
     }
 
-    
-
    
+
+
 
 
 }

@@ -23,7 +23,6 @@ public abstract class Character : MonoBehaviour
 
     public virtual void LookAt(Vector3 direction)
     {
-        //direction.y = gameObject.transform.position.y;
         transform.LookAt(direction);
     }
 
@@ -31,7 +30,6 @@ public abstract class Character : MonoBehaviour
     {
         hp = hp - damage_amount;
         CheckHealth();
-        Debug.Log(hp+" "+gameObject.name);  
     }
 
     public void CheckHealth()
