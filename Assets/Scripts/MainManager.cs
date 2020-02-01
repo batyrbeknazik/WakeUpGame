@@ -1,10 +1,22 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class MainManager : MonoBehaviour
 {
     public bool gameON;
+    protected int money;
+
+    [Header("Prefabs")]
+    public GameObject[] enemies;
+    [Header("Parents")]
+    public GameObject infantry_parent;
+    public GameObject artillery_parent;
+    [Header("UI")]
+    public Text main_text;
+
+
 
     private static MainManager _instance;
 
@@ -19,14 +31,75 @@ public class MainManager : MonoBehaviour
             return _instance;
         }
     }
+
+
     public void Start()
     {
-        gameON = true;
+        StartCoroutine(StartGame());
+        
     }
 
     public virtual void Win()
     {
         gameON = false;
     }
+
     
+    public void EndGame()
+    {
+
+    }
+
+    public void SpawnEnemies()
+    {
+        for (int i=0;i<3;i++)
+        {
+            int type = Random.Range(0, 2);
+            GameObject enemy = Instantiate(enemies[type], GenerateRandomLocation(), Quaternion.identity);
+            switch (type)
+            {
+                case 0:
+                    enemy.transform.parent = infantry_parent.transform;
+                    break;
+                case 1:
+                    enemy.transform.parent = artillery_parent.transform;
+                    break;
+
+            }
+        }
+        
+    }
+    public Vector3 GenerateRandomLocation()
+    {
+        int z = Random.Range(-2, -46);
+        int x = Random.Range(-21, 21);
+        Vector3 location = new Vector3(x,8,z);
+        return location;
+    }
+
+    public IEnumerator StartGame()
+    {
+        int timer = 3;
+        
+        while (timer>0)
+        {
+            yield return new WaitForSeconds(1f);
+            SetText(timer.ToString());
+            timer--;
+        }
+        
+        gameON = true;
+        SpawnEnemies();
+    }
+
+    public void GiveReward(int amount)
+    {
+        money = money + amount;
+        print(money + " money");
+
+    }
+    public void SetText(string text)
+    {
+        main_text.text = text;
+    }
 }

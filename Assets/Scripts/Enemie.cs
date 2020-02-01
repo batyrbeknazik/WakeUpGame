@@ -15,21 +15,19 @@ public class Enemie : Character
     }
 
 
-    //protected void FixedUpdate()
-    //{
-    //    if (MainManager.Instance.gameON)
-    //    {
+    protected void FixedUpdate()
+    {
+        if (MainManager.Instance.gameON)
+        {
+            
+            LookAt(FindEnemy());
 
-    //        if (IfIsMoving())
-    //        {
-    //            Move();
-    //        }
-    //        else
-    //        {
-    //            Shoot();
-    //        }
-    //    }
-    //}
+            shoot_timer += Time.deltaTime;
+
+            Move();
+            
+        }
+    }
 
     public override void Move()
     {
@@ -38,6 +36,15 @@ public class Enemie : Character
             if(KeepDistance())
             {
                 FollowEnemie();
+            }
+            else
+            {
+
+                if (ShootTimer())
+                {
+                    Shoot();
+                    shoot_timer = 0f;
+                }
             }
         }
     }
@@ -54,48 +61,44 @@ public class Enemie : Character
 
     public void FollowEnemie()
     {
-        transform.position = Vector3.MoveTowards(transform.position, target.position, run_speed * Time.deltaTime); 
+        Vector3 targetPos = new Vector3(target.position.x, transform.position.y, target.position.z);
+        transform.position = Vector3.MoveTowards(transform.position, targetPos, run_speed * Time.deltaTime); 
     }
 
     public void SetValues()
     {
-        distance = 25f;
-        run_speed = 12f;
-        stopping_distance = 10f;
-        damage_amount = 20f;
-        hp = 100;
-
-        timer = 0;
-        shoot_speed = 2f;
-
         hero_body = gameObject.GetComponent<Rigidbody>();
-
     }
     public override void Shoot()
     {
-        //throw new System.NotImplementedException();
-        Debug.Log("boof");
-    }
-    public override bool IfIsMoving()
-    {
-        //throw new System.NotImplementedException();
-        if (transform.hasChanged)
+        RaycastHit info;
+
+        if (Physics.Raycast(transform.position, transform.forward, out info))
         {
-            is_moving = true;
-            transform.hasChanged = false;
+
+            Hero enemie = info.transform.GetComponent<Hero>();
+
+            if (enemie != null)
+            {
+                enemie.Damage();
+            }
+
+            Debug.Log(info.transform.name);
         }
-        else
-        {
-            is_moving = false;
-        }
-        return is_moving;
     }
+    
 
     public override Vector3 FindEnemy()
     {
         target = GameObject.FindGameObjectWithTag("Player").GetComponent<Transform>();
-        return target.position;
+
+        return target.transform.position;
+       
     }
+
+    
+
+   
 
 
 }

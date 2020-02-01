@@ -12,63 +12,50 @@ public abstract class Character : MonoBehaviour
     public float damage_amount;
 
     public bool is_moving;
-    public float timer;
+    public float shoot_timer;
 
 
-    protected void FixedUpdate()
-    {
-        timer += Time.deltaTime;
-
-        if (MainManager.Instance.gameON)
-        {
-            LookAt(FindEnemy());
-
-            if (IfIsMoving())
-            {
-                Move();
-            }
-            else
-            {
-                if (ShootTimer())
-                {
-                    Shoot();
-                    timer = 0f;
-                }
-            }
-
-        }
-    }
+   
 
     public abstract void Move();
 
     public abstract void Shoot();
 
-    public abstract bool IfIsMoving();
-
     public virtual void LookAt(Vector3 direction)
     {
+        //direction.y = gameObject.transform.position.y;
         transform.LookAt(direction);
     }
 
-    public void Damage()
+    public virtual void Damage()
     {
         hp = hp - damage_amount;
         CheckHealth();
-        Debug.Log(hp);  
+        Debug.Log(hp+" "+gameObject.name);  
     }
 
     public void CheckHealth()
     {
         if (hp<=0)
         {
+            switch (gameObject.tag)
+            {
+                case "Player":
+                    MainManager.Instance.Win();
+                    break;
+                case "Enemy":
+                    MainManager.Instance.GiveReward(20);
+                    break;
+            }
             Destroy(gameObject);
         }
     }
     public abstract Vector3 FindEnemy();
 
-    public bool ShootTimer()
+    public virtual bool ShootTimer()
     {
-        return timer > shoot_speed;
+        return shoot_timer > shoot_speed;
     }
+    
 
 }

@@ -5,21 +5,44 @@ using UnityEngine;
 public class Hero : Character
 {
     public Enemie closestEnemy;
-
+    
     public void Start()
     {
-        hero_body = gameObject.GetComponent<Rigidbody>();
-        run_speed = 15;
-        damage_amount = 10;
-        timer = 0;
-        shoot_speed = 2f;
+        SetValues();
     }
 
-    
+    protected void FixedUpdate()
+    {
+        shoot_timer += Time.deltaTime;
+
+        if (MainManager.Instance.gameON)
+        {
+            LookAt(FindEnemy());
+
+            if (IfIsMoving())
+            {
+                Move();
+            }
+            else
+            {
+                if (ShootTimer())
+                {
+                    Shoot();
+                    shoot_timer = 0f;
+                }
+            }
+
+        }
+    }
+
+    public void SetValues()
+    {
+        hero_body = gameObject.GetComponent<Rigidbody>();
+    }
 
     public override void Move()
     {
-        transform.Translate(Input.GetAxis("Vertical") * Time.deltaTime * -run_speed, 0f, Input.GetAxis("Horizontal") * Time.deltaTime * run_speed);
+        transform.Translate(Input.GetAxis("Vertical") * Time.deltaTime * -run_speed, 0f, Input.GetAxis("Horizontal") * Time.deltaTime * run_speed, Space.World);
     }
 
 
@@ -28,6 +51,10 @@ public class Hero : Character
         if (other.gameObject.name == "WinWall")
         {
             MainManager.Instance.Win();
+        }
+        else if (other.gameObject.tag=="enemy")
+        {
+            hp = hp - 5;
         }
     }
 
@@ -70,6 +97,7 @@ public class Hero : Character
 
         if (Physics.Raycast(transform.position, transform.forward, out info))
         {
+            
             Enemie enemie = info.transform.GetComponent<Enemie>();
 
             if(enemie!=null)
@@ -81,7 +109,7 @@ public class Hero : Character
         }
     }
 
-    public override bool IfIsMoving()
+    public bool IfIsMoving()
     {
         if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.D))
         {
@@ -95,10 +123,13 @@ public class Hero : Character
         return is_moving;
     }
 
-    public bool ShootTimer()
+    public override void Damage()
     {
-        return timer > shoot_speed;
+        base.Damage();
+        MainManager.Instance.SetText("Player health: "+hp.ToString());
     }
-    
-    
+
+
+
+
 }
