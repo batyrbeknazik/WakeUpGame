@@ -8,13 +8,14 @@ public class MainManager : MonoBehaviour
     public bool gameON;
     protected int money;
 
-    [Header("Prefabs")]
-    public GameObject[] enemies;
-    [Header("Parents")]
+    [Header("Enemies Prefabs")]
+    public GameObject[] enemiesPrefabs;
+    [Header("Enemies Parents")]
     public GameObject infantry_parent;
     public GameObject artillery_parent;
-    [Header("Parents")]
+    [Header("Enemies Info")]
     public GameObject[] current_enemies;
+    public int enemies_amount;
     [Header("UI")]
     public Text main_text;
 
@@ -47,18 +48,12 @@ public class MainManager : MonoBehaviour
         gameON = false;
     }
 
-    
-    public void EndGame()
-    {
-
-    }
-
     public void SpawnEnemies()
     {
-        for (int i=0;i<3;i++)
+        for (int i=0;i< enemies_amount; i++)
         {
             int type = Random.Range(0, 2);
-            GameObject enemy = Instantiate(enemies[type], GenerateRandomLocation(), Quaternion.identity);
+            GameObject enemy = Instantiate(enemiesPrefabs[type], GenerateRandomLocation(), Quaternion.identity);
             current_enemies[i] = enemy;
             switch (type)
             {

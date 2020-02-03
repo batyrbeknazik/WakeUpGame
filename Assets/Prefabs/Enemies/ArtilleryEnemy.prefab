@@ -129,5 +129,5 @@ MonoBehaviour:
   is_moving: 0
   shoot_timer: 0
   distance: 40
-  stopping_distance: 10
+  stopping_distance: 20
   target: {fileID: 0}

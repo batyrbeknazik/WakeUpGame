@@ -4,10 +4,13 @@ using UnityEngine;
 
 public class Enemie : Character
 {
+    [Header("Enemy Values")]
     public float distance;
     public float stopping_distance;
 
+    [Header("Target")]
     public Transform target;
+
 
     public void Start()
     {
@@ -17,12 +20,11 @@ public class Enemie : Character
 
     protected void FixedUpdate()
     {
+
         if (MainManager.Instance.gameON)
         {
-            
             LookAt(FindEnemy());
 
-            shoot_timer += Time.deltaTime;
 
             Move();
             
@@ -31,6 +33,7 @@ public class Enemie : Character
 
     public override void Move()
     {
+
         if (EnemieIsNear())
         {
             if(KeepDistance())
@@ -39,11 +42,11 @@ public class Enemie : Character
             }
             else
             {
+                ShootTimer();
 
-                if (ShootTimer())
+                if (TimeToShoot())
                 {
                     Shoot();
-                    shoot_timer = 0f;
                 }
             }
         }
@@ -70,24 +73,7 @@ public class Enemie : Character
     {
         hero_body = gameObject.GetComponent<Rigidbody>();
     }
-    public override void Shoot()
-    {
-        RaycastHit info;
 
-        if (Physics.Raycast(transform.position, transform.forward, out info))
-        {
-
-            Hero enemie = info.transform.GetComponent<Hero>();
-
-            if (enemie != null)
-            {
-                enemie.Damage();
-            }
-
-            Debug.Log(info.transform.name);
-        }
-    }
-    
 
     public override Vector3 FindEnemy()
     {
